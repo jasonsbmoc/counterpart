@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Website</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            color: #fff;
+            font-family: 'Libre Franklin', sans-serif;
+            overflow: hidden;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 20px;
+            z-index: 1000;
+        }
+
+        h1 {
+            text-align: left;
+            font-weight: 400;
+            font-size: 4.5em;
+        }
+
+        .links {
+            display: flex;
+            justify-content: flex-start;
+            margin-top: 20px;
+            gap: 20px;
+        }
+
+        .links a {
+            color: #fff; 
+            text-decoration: none;
+            transition: color 0.3s; 
+        }
+
+        .links a:hover {
+            color: #aaffaa;
+        }
+
+        main {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 2;
+        }
+
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: flex-end;
+            position: relative;
+            z-index: 1;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .gallery img {
+            max-width: 100%;
+            height: auto;
+            margin: 10px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .gallery img:hover {
+            transform: scale(1.1);
+        }
+
+        .metadata {
+            position: absolute;
+            top: 0;
+            right: -200px;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            color: #fff;
+            opacity: 0;
+            transition: opacity 0.3s, right 0.3s;
+        }
+
+        .gallery img:hover + .metadata {
+            opacity: 1;
+            right: 10px;
+        }
+
+        #logo {
+            width: 30px;
+            height: 30px;
+            transition: transform 0.5s;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <!-- Your logo SVG and link here -->
+        <a href="#" style="text-decoration: none; color: #fff;">
+            <svg width="30" height="30" xmlns="http://www.w3.org/2000/svg">
+                <!-- Your SVG content here -->
+            </svg>
+        </a>
+    </header>
+
+    <main>
+        <h1>Counterpart is a design and risograph publishing studio in Chicago, IL.</h1>
+        <div class="links">
+            <a href="#">Email</a>
+            /
+            <a href="#">Instagram</a>
+            /
+            <a href="#">Are.na</a>
+        </div>
+    </main>
+
+    <div class="gallery">
+        <!-- Images will be dynamically loaded here -->
+    </div>
+
+    <script>
+        const logo = document.getElementById('logo');
+        const main = document.querySelector('main');
+
+        window.addEventListener('scroll', () => {
+            const scrollPosition = window.scrollY;
+
+            // Rotate the logo based on the scroll position
+            logo.style.transform = `rotate(${scrollPosition}deg)`;
+
+            // Show gallery on scroll
+            if (scrollPosition > 0) {
+                main.style.opacity = '0';
+            } else {
+                main.style.opacity = '1';
+            }
+        });
+    </script>
+
+    <script>
+        const main = document.querySelector('main');
+        const gallery = document.querySelector('.gallery');
+
+        // Fetch and dynamically load images from GitHub repository
+        fetch('~/Users/jasoncombs/Documents/Directory/2023-09_Counterpart/Contents/Images')
+            .then(response => response.json())
+            .then(images => {
+                images.forEach(image => {
+                    const img = document.createElement('img');
+                    img.src = image.download_url;
+
+                    // Add metadata
+                    const metadata = document.createElement('div');
+                    metadata.classList.add('metadata');
+                    metadata.innerHTML = `<p>${image.name}</p><p>${image.size} bytes</p>`;
+
+                    gallery.appendChild(img);
+                    gallery.appendChild(metadata);
+                });
+            });
+
+        // Show gallery on scroll
+        window.addEventListener('scroll', () => {
+            const scrollPosition = window.scrollY;
+
+            if (scrollPosition > 0) {
+                main.style.opacity = '0';
+                gallery.style.opacity = '1';
+            } else {
+                main.style.opacity = '1';
+                gallery.style.opacity = '0';
+            }
+        });
+    </script>
+</body>
+
+</html>
